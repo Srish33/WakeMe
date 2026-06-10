@@ -22,13 +22,15 @@ class MoodEntryModelAdapter extends TypeAdapter<MoodEntryModel> {
       note: fields[2] as String,
       createdAt: fields[3] as DateTime,
       title: fields[4] as String?,
+      audioPaths: (fields[5] as List).cast<String>(),
+      audioDurationsMs: (fields[6] as List).cast<int>(),
     );
   }
 
   @override
   void write(BinaryWriter writer, MoodEntryModel obj) {
     writer
-      ..writeByte(5)
+      ..writeByte(7)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -38,7 +40,11 @@ class MoodEntryModelAdapter extends TypeAdapter<MoodEntryModel> {
       ..writeByte(3)
       ..write(obj.createdAt)
       ..writeByte(4)
-      ..write(obj.title);
+      ..write(obj.title)
+      ..writeByte(5)
+      ..write(obj.audioPaths)
+      ..writeByte(6)
+      ..write(obj.audioDurationsMs);
   }
 
   @override
@@ -47,7 +53,7 @@ class MoodEntryModelAdapter extends TypeAdapter<MoodEntryModel> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          other is MoodEntryModelAdapter &&
-              runtimeType == other.runtimeType &&
-              typeId == other.typeId;
+      other is MoodEntryModelAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
 }

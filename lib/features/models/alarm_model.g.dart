@@ -28,13 +28,19 @@ class AlarmModelAdapter extends TypeAdapter<AlarmModel> {
       createdAt: fields[8] as DateTime,
       updatedAt: fields[9] as DateTime,
       label: fields[10] as String?,
+      routineTasks: (fields[11] as List).cast<RoutineTask>(),
+      routineReminderSoundPath: fields[12] as String,
+      challengeType: fields[13] as ChallengeType,
+      stepGoal: fields[14] as int,
+      barcodeData: fields[15] as String?,
+      referencePhotoPath: fields[16] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, AlarmModel obj) {
     writer
-      ..writeByte(11)
+      ..writeByte(17)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -56,7 +62,19 @@ class AlarmModelAdapter extends TypeAdapter<AlarmModel> {
       ..writeByte(9)
       ..write(obj.updatedAt)
       ..writeByte(10)
-      ..write(obj.label);
+      ..write(obj.label)
+      ..writeByte(11)
+      ..write(obj.routineTasks)
+      ..writeByte(12)
+      ..write(obj.routineReminderSoundPath)
+      ..writeByte(13)
+      ..write(obj.challengeType)
+      ..writeByte(14)
+      ..write(obj.stepGoal)
+      ..writeByte(15)
+      ..write(obj.barcodeData)
+      ..writeByte(16)
+      ..write(obj.referencePhotoPath);
   }
 
   @override
@@ -65,7 +83,86 @@ class AlarmModelAdapter extends TypeAdapter<AlarmModel> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          other is AlarmModelAdapter &&
-              runtimeType == other.runtimeType &&
-              typeId == other.typeId;
+      other is AlarmModelAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
+}
+
+class ChallengeTypeAdapter extends TypeAdapter<ChallengeType> {
+  @override
+  final int typeId = 6;
+
+  @override
+  ChallengeType read(BinaryReader reader) {
+    switch (reader.readByte()) {
+      case 0:
+        return ChallengeType.numberOrder;
+      case 1:
+        return ChallengeType.memorySequence;
+      case 2:
+        return ChallengeType.matchPairs;
+      case 3:
+        return ChallengeType.sequencePath;
+      case 4:
+        return ChallengeType.patternMemory;
+      case 5:
+        return ChallengeType.typing;
+      case 6:
+        return ChallengeType.stepCounter;
+      case 7:
+        return ChallengeType.math;
+      case 8:
+        return ChallengeType.barcodeScanner;
+      case 9:
+        return ChallengeType.photoMatch;
+      default:
+        return ChallengeType.numberOrder;
+    }
+  }
+
+  @override
+  void write(BinaryWriter writer, ChallengeType obj) {
+    switch (obj) {
+      case ChallengeType.numberOrder:
+        writer.writeByte(0);
+        break;
+      case ChallengeType.memorySequence:
+        writer.writeByte(1);
+        break;
+      case ChallengeType.matchPairs:
+        writer.writeByte(2);
+        break;
+      case ChallengeType.sequencePath:
+        writer.writeByte(3);
+        break;
+      case ChallengeType.patternMemory:
+        writer.writeByte(4);
+        break;
+      case ChallengeType.typing:
+        writer.writeByte(5);
+        break;
+      case ChallengeType.stepCounter:
+        writer.writeByte(6);
+        break;
+      case ChallengeType.math:
+        writer.writeByte(7);
+        break;
+      case ChallengeType.barcodeScanner:
+        writer.writeByte(8);
+        break;
+      case ChallengeType.photoMatch:
+        writer.writeByte(9);
+        break;
+    }
+  }
+
+  @override
+  int get hashCode => typeId.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is ChallengeTypeAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
 }

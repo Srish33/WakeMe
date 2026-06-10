@@ -14,14 +14,23 @@ class MoodProvider extends ChangeNotifier {
 
   List<MoodEntryModel> get entries => _moodBox.values.toList()..sort((a, b) => b.createdAt.compareTo(a.createdAt));
 
-  Future<void> addEntry({required String mood, required String note, String? title}) async {
+  Future<void> addEntry({
+    required String mood,
+    required String note,
+    String? title,
+    List<String> audioPaths = const [],
+    List<int> audioDurationsMs = const [],
+    DateTime? date,
+  }) async {
     final id = const Uuid().v4();
     final entry = MoodEntryModel(
       id: id,
       mood: mood,
       note: note,
-      createdAt: DateTime.now(),
+      createdAt: date ?? DateTime.now(),
       title: title,
+      audioPaths: audioPaths,
+      audioDurationsMs: audioDurationsMs,
     );
     await _moodBox.put(id, entry);
     notifyListeners();

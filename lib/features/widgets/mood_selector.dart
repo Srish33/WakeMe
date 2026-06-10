@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../core/theme/app_theme.dart';
 
+// An interactive row of emojis that animate their size and shadow based on selection state.
 class MoodSelector extends StatelessWidget {
   final String? selectedMood;
   final Function(String) onMoodSelected;
@@ -11,36 +11,47 @@ class MoodSelector extends StatelessWidget {
     required this.onMoodSelected,
   });
 
-  final List<Map<String, String>> moods = const [
-    {'emoji': '😢', 'label': 'Sad'},
-    {'emoji': '😐', 'label': 'Neutral'},
-    {'emoji': '🙂', 'label': 'Good'},
-    {'emoji': '😊', 'label': 'Happy'},
-    {'emoji': '🤩', 'label': 'Excited'},
-  ];
+  // Current mood options available for selection
+  final List<String> moods = const ['😴', '😐', '🙂', '😊', '🤩'];
 
   @override
   Widget build(BuildContext context) {
+    final primaryColor = Theme.of(context).colorScheme.primary;
+
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: moods.map((mood) {
-        final isSelected = selectedMood == mood['emoji'];
+        final isSelected = selectedMood == mood;
         return GestureDetector(
-          onTap: () => onMoodSelected(mood['emoji']!),
+          onTap: () => onMoodSelected(mood),
           child: AnimatedContainer(
-            duration: const Duration(milliseconds: 200),
-            padding: const EdgeInsets.all(8),
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeOutBack, // Provide tactile "pop" feedback
+            padding: EdgeInsets.all(isSelected ? 16 : 8),
             decoration: BoxDecoration(
-              color: isSelected ? AppTheme.primaryPurple.withValues(alpha: 0.2) : Colors.transparent,
+              color: isSelected 
+                  ? primaryColor.withValues(alpha: 0.2) 
+                  : Colors.white.withValues(alpha: 0.05),
               shape: BoxShape.circle,
               border: Border.all(
-                color: isSelected ? AppTheme.primaryPurple : Colors.transparent,
+                color: isSelected 
+                    ? primaryColor 
+                    : Colors.transparent,
                 width: 2,
               ),
+              boxShadow: isSelected ? [
+                // Glowing halo effect when selected
+                BoxShadow(
+                  color: primaryColor.withValues(alpha: 0.3),
+                  blurRadius: 15, 
+                  spreadRadius: 1
+                )
+              ] : [],
             ),
-            child: Text(
-              mood['emoji']!,
-              style: const TextStyle(fontSize: 32),
+            child: AnimatedDefaultTextStyle(
+              duration: const Duration(milliseconds: 300),
+              style: TextStyle(fontSize: isSelected ? 36 : 24),
+              child: Text(mood),
             ),
           ),
         );
